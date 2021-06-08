@@ -1,0 +1,157 @@
+import turtle
+import os
+
+wn = turtle.Screen()
+wn.title("Pong")
+
+# Change background color
+wn.bgcolor("black")
+
+# change size of window
+wn.setup(width=800, height=600)
+
+# stop the window from updating (also speeds up game)
+wn.tracer(0)
+
+# Score
+score_a = 0
+score_b = 0
+
+# Paddle A
+# Making the paddle a Turtle object
+paddle_a = turtle.Turtle()
+# Defining the speed of animation
+paddle_a.speed(0)
+# giving the paddle a shape
+paddle_a.shape("square")
+paddle_a.color("white")
+# Changing shape and size of paddle
+paddle_a.shapesize(stretch_wid=5, stretch_len=1)
+paddle_a.penup()
+# Giving the paddle a place to start
+paddle_a.goto(-350, 0)
+
+# Paddle B
+paddle_b = turtle.Turtle()
+# Definig the speed of animation
+paddle_b.speed(0)
+# giving the paddle a shape
+paddle_b.shape("square")
+paddle_b.color("white")
+# Changing shape and size of paddle
+paddle_b.shapesize(stretch_wid=5, stretch_len=1)
+paddle_b.penup()
+# Giving th paddle a place to start
+paddle_b.goto(350, 0)
+
+# Ball
+ball = turtle.Turtle()
+# Definig the speed of animation
+ball.speed(0)
+# giving the paddle a shape
+ball.shape("square")
+ball.color("white")
+ball.penup()
+# Giving th paddle a place to start
+ball.goto(0, 0)
+ # Ball Movement - Making go by the x and y axis
+ball.dx = 0.2
+ball.dy = -0.2
+
+# Pen
+pen = turtle.Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Player A: 0  Player B: 0", align = "center", font = ("Courier" , 24, "normal"))
+
+# Function
+# Defining a function to move paddle a and b up
+def paddle_a_up():
+    # .ycor is a method that returns Y co-ordinate
+    y = paddle_a.ycor()
+    # Moving the paddle a up by 20 pixels
+    y += 20
+    # setting y to the new line
+    paddle_a.sety(y)
+
+def paddle_a_down():
+    # .ycor is a method that returns Y co-ordinate
+    y = paddle_a.ycor()
+    # Moving the paddle a up by 20 pixels
+    y -= 20
+    # setting y to the new line
+    paddle_a.sety(y)
+
+def paddle_b_up():
+    # .ycor is a method that returns Y co-ordinate
+    y = paddle_b.ycor()
+    # Moving the paddle a up by 20 pixels
+    y += 20
+    # setting y to the new line
+    paddle_b.sety(y)
+
+def paddle_b_down():
+    # .ycor is a method that returns Y co-ordinate
+    y = paddle_b.ycor()
+    # Moving the paddle a up by 20 pixels
+    y -= 20
+    # setting y to the new line
+    paddle_b.sety(y)
+
+
+# Keyboard binding
+# calling the function paddle_a_up
+wn.listen()
+wn.onkeypress(paddle_a_up, "z")
+wn.onkeypress(paddle_a_down, "x")
+wn.onkeypress(paddle_b_up, "Up")
+wn.onkeypress(paddle_b_down, "Down")
+
+# Main game loop
+while True:
+    # updating the screen every time the loop runs
+    wn.update()
+
+    # Move the ball
+    ball.setx(ball.xcor() + ball.dx)
+    ball.sety(ball.ycor() + ball.dy)
+
+    # Border checking
+    if ball.ycor() > 290:
+        ball.sety(290)
+        # Reversing the direction
+        ball.dy *= -1
+
+
+    if ball.ycor() < -290:
+        ball.sety(-290)
+        # Reversing the direction
+        ball.dy *= -1
+
+    if ball.xcor() > 390:
+        # If it's gone past the corner we make the ball back to 0, 0 which is the start of the ball
+        ball.goto(0, 0)
+        ball.dx *= -1
+        score_a += 1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+
+    if ball.xcor() < -390:
+        # If it's gone past the corner we make the ball back to 0, 0 which is the start of the ball
+        ball.goto(0, 0)
+        ball.dx *= -1
+        score_b += 1
+        pen.clear()
+        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+
+    # Paddle and ball Collision
+    if (ball.xcor() > 340 and ball.xcor() < 350) and (ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() - 40):
+        ball.setx(340)
+        ball.dx *= -1
+
+    if (ball.xcor() < -340 and ball.xcor() < -350) and (ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() - 40):
+            ball.setx(-340)
+            ball.dx *= -1
